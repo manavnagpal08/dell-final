@@ -17,7 +17,7 @@ app = FastAPI(
 # CORS configuration
 origins = [
     "http://localhost:3000",
-    "http://localhost:8000",
+    "http://localhost:9000",
     "https://vyom-ai-frontend.vercel.app", # Replace with actual frontend URL
     # Include Electron URL if running locally as desktop app
     "file://"

@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 # For a real enterprise scenario, the DEVICE_ID would be provisioned during installation
 # and stored in a secure local configuration file or registry.
 CONFIG_FILE = "agent_config.json"
-API_URL = os.getenv("SENTINEL_API_URL", "http://localhost:8000/api/v1")
+API_URL = os.getenv("SENTINEL_API_URL", "http://localhost:9000/api/v1")
 
 def get_or_create_device_id():
     if os.path.exists(CONFIG_FILE):

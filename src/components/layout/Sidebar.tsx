@@ -36,8 +36,7 @@ const navigationGroups = [
     icon: Activity,
     items: [
       { title: 'Risk Forecasts', href: '/predictions' },
-      { title: 'Action Recommendations', href: '/recommendations' },
-      { title: 'Decision Audits', href: '/explainability' },
+      { title: 'Maintenance', href: '/recommendations' },
     ]
   },
   {
@@ -153,8 +152,8 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       
       {/* Logo */}
       <div className="flex h-20 items-center gap-3 px-6 border-b border-border bg-transparent shrink-0 relative z-10">
-        <div className="flex h-10 w-10 items-center justify-center bg-transparent">
-          <img src="/logo.png" alt="Vyom AI Logo" className="w-full h-full object-contain" />
+        <div className="flex h-10 w-10 items-center justify-center bg-blue-50 rounded-xl border border-blue-100 shrink-0">
+          <BrainCircuit className="h-6 w-6 text-blue-600" />
         </div>
         <div>
           <span className="text-xl font-black tracking-tight text-foreground">VYOM <span className="text-blue-600 dark:text-blue-500">AI</span></span>

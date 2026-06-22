@@ -8,7 +8,7 @@
 # ==============================================================================
 
 # Your deployed backend URL (or localhost if running locally)
-API_URL="http://localhost:8000/api/v1"
+API_URL="http://localhost:9000/api/v1"
 
 # The unique ID of your device (e.g., from your previous app)
 DEVICE_ID="legacy-app-server-01"

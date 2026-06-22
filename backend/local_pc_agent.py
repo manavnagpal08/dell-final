@@ -3,7 +3,7 @@ import requests
 import platform
 import psutil
 
-API_URL = "http://localhost:8000/api/v1"
+API_URL = "http://localhost:9000/api/v1"
 
 def get_system_metrics():
     # Simulate Fan RPM based on CPU load (since psutil sensors_fans is often unavailable on Windows/Mac)

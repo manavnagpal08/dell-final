@@ -47,11 +47,11 @@ pip install -r requirements.txt
 ### 3. Run the Server
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 9000
 ```
 
-The API will be available at `http://localhost:8000`.
-Swagger Documentation: `http://localhost:8000/docs`
+The API will be available at `http://localhost:9000`.
+Swagger Documentation: `http://localhost:9000/docs`
 
 ### 4. Database Setup
 

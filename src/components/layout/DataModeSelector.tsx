@@ -15,7 +15,7 @@ export function DataModeSelector() {
     if (match && match[2] && match[2] !== mode) {
       const m = match[2] as DataMode;
       setModeState(m);
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api/v1';
       fetch(`${API_URL}/mode`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

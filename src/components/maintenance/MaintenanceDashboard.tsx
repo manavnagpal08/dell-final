@@ -77,6 +77,7 @@ export function MaintenanceDashboard() {
       
       const today = new Date().getDate();
       const newEvents: CalendarEvent[] = [];
+      const newTasks: Task[] = [];
       // Inject varied mock data for newly created backend devices
       const realisticDevs = devs.map((d: Device) => {
         const seed = d.id ? d.id.charCodeAt(0) + d.id.charCodeAt(d.id.length - 1) : 1;

@@ -3,7 +3,7 @@ import requests
 import random
 from datetime import datetime, timezone
 
-API_URL = "http://localhost:8000/api/v1"
+API_URL = "http://localhost:9000/api/v1"
 
 DEVICES = [
     {"name": "Cooling Unit F12", "location": "Engineering Block", "type": "HVAC"},

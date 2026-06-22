@@ -178,7 +178,10 @@ export function InfrastructureMap({ devices }: { devices: Device[] }) {
                   }}
                 >
                   {/* Thick Glass Floor Surface */}
-                  <div className="absolute inset-0 bg-[#0f172a]/80 backdrop-blur-md border-[2px] border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                  <div 
+                    className="absolute inset-0 bg-[#0f172a]/80 backdrop-blur-md border-[2px] border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
                     
                     {/* Inner Grid Design */}
                     <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100px_100px]" />

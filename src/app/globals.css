@@ -1,0 +1,178 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+:root {
+  /* Clean Corporate Light Mode */
+  --background: 210 40% 98%; /* #f8fafc */
+  --foreground: 222 47% 11%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  
+  --primary: 221 83% 53%; /* #2563eb - Professional Blue */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221 83% 53%;
+  
+  --radius: 0.5rem;
+
+  /* Brand Colors - Professional */
+  --vyomai-cyan: #0284c7;  /* Sky 600 */
+  --vyomai-green: #16a34a; /* Green 600 */
+  --vyomai-red: #dc2626;   /* Red 600 */
+  --vyomai-amber: #d97706; /* Amber 600 */
+  --vyomai-purple: #4f46e5;/* Indigo 600 */
+  
+  /* Standard UI Variables */
+  --ui-bg: #ffffff;
+  --ui-border: #e2e8f0;
+}
+
+.dark {
+  /* Fallback minimal dark mode */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* ── Professional Clean Cards ── */
+.vy-card {
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.vy-card:hover {
+  box-shadow: 0 12px 40px -4px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+/* ── Metric card accents ── */
+.vy-card-blue  { border-top: 3px solid var(--vyomai-cyan); }
+.vy-card-green { border-top: 3px solid var(--vyomai-green); }
+.vy-card-red   { border-top: 3px solid var(--vyomai-red); }
+.vy-card-amber { border-top: 3px solid var(--vyomai-amber); }
+
+/* ── Subtle corporate badge ── */
+.vy-badge-blue   { background: #f0f9ff; color: var(--vyomai-cyan); border: 1px solid #e0f2fe; }
+.vy-badge-green  { background: #f0fdf4; color: var(--vyomai-green); border: 1px solid #dcfce7; }
+.vy-badge-red    { background: #fef2f2;  color: var(--vyomai-red); border: 1px solid #fee2e2; }
+.vy-badge-amber  { background: #fffbeb; color: var(--vyomai-amber); border: 1px solid #fef3c7; }
+
+/* ── Standard Live dot (No heavy pulsing glow) ── */
+.live-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.live-dot-blue  { background: var(--vyomai-cyan); }
+.live-dot-green { background: var(--vyomai-green); }
+.live-dot-red   { background: var(--vyomai-red); }
+
+/* ── Replaces gradient text with standard slate ── */
+.gradient-text {
+  color: #0f172a;
+}
+
+/* ── Clean Background ── */
+.bg-mesh-gradient {
+  background-color: var(--background);
+}
+
+/* ── Recharts overrides ── */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+  color: #0f172a !important;
+}
+
+/* ── No scrollbar utility ── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Thin scrollbar for chat area ── */
+.chat-scroll::-webkit-scrollbar { width: 4px; }
+.chat-scroll::-webkit-scrollbar-track { background: transparent; }
+.chat-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }
+.chat-scroll::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }

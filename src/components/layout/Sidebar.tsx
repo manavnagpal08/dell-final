@@ -153,11 +153,11 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       
       {/* Logo */}
       <div className="flex h-20 items-center gap-3 px-6 border-b border-border bg-transparent shrink-0 relative z-10">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)] dark:shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-          <Server className="h-6 w-6" />
+        <div className="flex h-10 w-10 items-center justify-center bg-transparent">
+          <img src="/logo.png" alt="Vyom AI Logo" className="w-full h-full object-contain" />
         </div>
         <div>
-          <span className="text-xl font-black tracking-tight text-foreground">VYOM <span className="text-blue-600 dark:text-blue-500">SYSTEM</span></span>
+          <span className="text-xl font-black tracking-tight text-foreground">VYOM <span className="text-blue-600 dark:text-blue-500">AI</span></span>
           <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-widest mt-0.5">Mission Control</p>
         </div>
       </div>

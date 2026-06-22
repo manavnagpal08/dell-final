@@ -180,7 +180,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex overflow-hidden bg-[#030712] relative font-sans text-slate-200">
+    <div className="min-h-screen flex overflow-hidden bg-slate-50 relative font-sans text-slate-800">
       <ParticleCanvas />
       
       {/* Decorative ambient background gradients */}
@@ -192,7 +192,7 @@ export default function LoginPage() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full lg:w-[45%] flex flex-col items-center justify-center p-8 lg:p-16 relative z-10 border-r border-white/5 bg-black/40 backdrop-blur-md"
+        className="w-full lg:w-[45%] flex flex-col items-center justify-center p-8 lg:p-16 relative z-10 border-r border-slate-200 bg-white/80 backdrop-blur-md"
       >
         <div className="w-full max-w-sm space-y-8 relative">
           
@@ -202,12 +202,12 @@ export default function LoginPage() {
               <div className="p-2 bg-blue-500/10 rounded-xl border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                 <BrainCircuit className="h-6 w-6 text-blue-500" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">VyomAi</span>
+              <span className="text-xl font-bold tracking-tight text-slate-900">Vyom AI</span>
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
               {isSignUp ? 'Create an Account' : 'Welcome Back'}
             </h1>
-            <p className="text-slate-400 text-sm font-medium">
+            <p className="text-slate-500 text-sm font-medium">
               {isSignUp ? 'Join the future of predictive infrastructure.' : 'Sign in to access your mission control.'}
             </p>
           </div>
@@ -216,18 +216,18 @@ export default function LoginPage() {
           <div className="space-y-6 relative">
             
             {/* Toggle tabs */}
-            <div className="flex p-1 bg-black/40 rounded-xl border border-white/5 relative z-10">
+            <div className="flex p-1 bg-slate-100 rounded-xl border border-slate-200 relative z-10">
               <button 
                 type="button"
                 onClick={() => setIsSignUp(false)}
-                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${!isSignUp ? 'bg-white/10 text-white shadow-lg backdrop-blur-md border border-white/10' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${!isSignUp ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Sign In
               </button>
               <button 
                 type="button"
                 onClick={() => setIsSignUp(true)}
-                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${isSignUp ? 'bg-white/10 text-white shadow-lg backdrop-blur-md border border-white/10' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${isSignUp ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Sign Up
               </button>
@@ -240,7 +240,7 @@ export default function LoginPage() {
                     initial={{ opacity: 0, height: 0 }} 
                     animate={{ opacity: 1, height: 'auto' }} 
                     exit={{ opacity: 0, height: 0 }}
-                    className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-medium flex items-center gap-2 overflow-hidden"
+                    className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-medium flex items-center gap-2 overflow-hidden"
                   >
                     <ShieldAlert className="h-4 w-4 shrink-0" />
                     {error}
@@ -256,12 +256,12 @@ export default function LoginPage() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2 overflow-hidden"
                   >
-                    <Label className="text-slate-400 font-semibold text-xs uppercase tracking-wider">Full Name</Label>
+                    <Label className="text-slate-600 font-semibold text-xs uppercase tracking-wider">Full Name</Label>
                     <Input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus-visible:ring-1 focus-visible:ring-blue-500 h-12 rounded-xl transition-all"
+                      className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 h-12 rounded-xl transition-all shadow-sm"
                       placeholder="Jane Doe"
                       required={isSignUp}
                     />
@@ -270,12 +270,12 @@ export default function LoginPage() {
               </AnimatePresence>
 
               <div className="space-y-2">
-                <Label className="text-slate-400 font-semibold text-xs uppercase tracking-wider">Email Address</Label>
+                <Label className="text-slate-600 font-semibold text-xs uppercase tracking-wider">Email Address</Label>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus-visible:ring-1 focus-visible:ring-blue-500 h-12 rounded-xl transition-all"
+                  className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 h-12 rounded-xl transition-all shadow-sm"
                   placeholder="admin@enterprise.com"
                   required
                 />
@@ -283,7 +283,7 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-slate-400 font-semibold text-xs uppercase tracking-wider">Password</Label>
+                  <Label className="text-slate-600 font-semibold text-xs uppercase tracking-wider">Password</Label>
                   {!isSignUp && (
                     <button type="button" className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
                       Forgot password?
@@ -291,21 +291,21 @@ export default function LoginPage() {
                   )}
                 </div>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                     <Lock className="h-4 w-4" />
                   </div>
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-black/40 border-white/10 text-white placeholder:text-slate-600 focus-visible:ring-1 focus-visible:ring-blue-500 h-12 rounded-xl pl-10 pr-10 transition-all"
+                    className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 h-12 rounded-xl pl-10 pr-10 transition-all shadow-sm"
                     placeholder={isSignUp ? 'Create a secure password' : 'Enter your password'}
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -360,35 +360,35 @@ export default function LoginPage() {
               Reliability Before Impact
             </motion.div>
             
-            <h2 className="text-5xl font-black text-white leading-tight tracking-tight">
+            <h2 className="text-5xl font-black text-slate-900 leading-tight tracking-tight">
               Advanced <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
                 Hardware Intelligence
               </span>
             </h2>
-            <p className="text-slate-400 text-lg leading-relaxed max-w-md mx-auto">
+            <p className="text-slate-600 text-lg leading-relaxed max-w-md mx-auto">
               Connect your infrastructure, stream live telemetry, and leverage advanced analytics to prevent server downtime before it ever happens.
             </p>
           </div>
 
           <div className="flex items-center justify-center gap-6 pt-8">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-16 w-16 rounded-2xl bg-black/40 backdrop-blur-xl flex items-center justify-center border border-white/5 shadow-2xl hover:border-blue-500/50 hover:bg-blue-500/10 transition-all cursor-default">
-                <Network className="h-7 w-7 text-blue-400" />
+              <div className="h-16 w-16 rounded-2xl bg-white backdrop-blur-xl flex items-center justify-center border border-slate-200 shadow-xl hover:border-blue-500/50 hover:bg-blue-50 transition-all cursor-default">
+                <Network className="h-7 w-7 text-blue-500" />
               </div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Telemetry</span>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Telemetry</span>
             </div>
             <div className="flex flex-col items-center gap-3">
-              <div className="h-16 w-16 rounded-2xl bg-black/40 backdrop-blur-xl flex items-center justify-center border border-white/5 shadow-2xl hover:border-indigo-500/50 hover:bg-indigo-500/10 transition-all cursor-default">
-                <Zap className="h-7 w-7 text-indigo-400" />
+              <div className="h-16 w-16 rounded-2xl bg-white backdrop-blur-xl flex items-center justify-center border border-slate-200 shadow-xl hover:border-indigo-500/50 hover:bg-indigo-50 transition-all cursor-default">
+                <Zap className="h-7 w-7 text-indigo-500" />
               </div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Predict</span>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Predict</span>
             </div>
             <div className="flex flex-col items-center gap-3">
-              <div className="h-16 w-16 rounded-2xl bg-black/40 backdrop-blur-xl flex items-center justify-center border border-white/5 shadow-2xl hover:border-emerald-500/50 hover:bg-emerald-500/10 transition-all cursor-default">
-                <ShieldAlert className="h-7 w-7 text-emerald-400" />
+              <div className="h-16 w-16 rounded-2xl bg-white backdrop-blur-xl flex items-center justify-center border border-slate-200 shadow-xl hover:border-emerald-500/50 hover:bg-emerald-50 transition-all cursor-default">
+                <ShieldAlert className="h-7 w-7 text-emerald-500" />
               </div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Prevent</span>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Prevent</span>
             </div>
           </div>
         </div>

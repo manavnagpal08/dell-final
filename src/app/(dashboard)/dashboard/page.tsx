@@ -96,7 +96,7 @@ export default async function DashboardPage() {
             icon={<ShieldAlert className="h-6 w-6" />} accentColor="red" />
         </StaggerItem>
         <StaggerItem>
-          <MetricCard title="Future Failures (30D)" value={summary.predicted_failures_30_days} description="Predicted failures"
+          <MetricCard title="Future Failures (30D)" value={Math.max(summary.predicted_failures_30_days, criticalCount)} description="Predicted failures"
             icon={<Zap className="h-6 w-6" />} accentColor="amber" />
         </StaggerItem>
         <StaggerItem>

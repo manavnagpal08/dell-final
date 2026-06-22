@@ -1,230 +1,318 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Server, Activity, ShieldAlert, ArrowLeft, Building2, Layers, MapPin, Search } from 'lucide-react';
 import { Device } from '@/types';
-import { MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-const FLOORS = [
-  { name: 'Floor 3', desc: 'DATACENTER CORE', color: 'from-blue-500 to-indigo-600' },
-  { name: 'Floor 2', desc: 'NETWORKING', color: 'from-emerald-500 to-teal-600' },
-  { name: 'Floor 1', desc: 'INFRASTRUCTURE', color: 'from-purple-500 to-pink-600' },
-  { name: 'Ground Floor', desc: 'AI & SERVICES', color: 'from-blue-400 to-cyan-500' },
-];
+// Mock location mapping for Hackathon
+const BUILDINGS = ['Engineering Block', 'BTech Block', 'MBA Block', 'Library', 'Hostel'];
+const FLOORS = ['Floor 1', 'Floor 2', 'Floor 3'];
 
 function assignMockLocation(deviceId: string) {
+  // Deterministic mock location based on device ID
   let sum = 0;
   for (let i = 0; i < deviceId.length; i++) {
     sum += deviceId.charCodeAt(i);
   }
-  return FLOORS[sum % FLOORS.length].name;
+  return {
+    building: BUILDINGS[sum % BUILDINGS.length],
+    floor: FLOORS[(sum * 7) % FLOORS.length],
+  };
 }
 
 function getStatusColor(status: string) {
-  if (status === 'Critical') return 'bg-red-500 shadow-red-500/50';
-  if (status === 'Warning') return 'bg-amber-500 shadow-amber-500/50';
-  return 'bg-emerald-500 shadow-emerald-500/50';
+  if (status === 'Critical') return 'bg-red-500 border-red-600 text-white';
+  if (status === 'Warning') return 'bg-amber-500 border-amber-600 text-white';
+  return 'bg-emerald-500 border-emerald-600 text-white';
 }
 
-// True 3D CSS Server Rack Component
-function Server3D({ device, onClick }: { device: Device, onClick: () => void }) {
-  const isCritical = device.risk_level === 'Critical';
-  const isWarning = device.risk_level === 'Warning';
-  
-  const ledColor = isCritical ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' : 
-                   isWarning ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.8)]' : 
-                   'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]';
-
-  return (
-    <div 
-      onClick={onClick}
-      className="relative w-12 h-16 cursor-pointer group hover:scale-110 transition-transform duration-300"
-      style={{ transformStyle: 'preserve-3d' }}
-    >
-      {/* Front Face (stands up) */}
-      <div 
-        className="absolute w-12 h-16 bg-slate-800 border border-slate-600 flex flex-col items-center justify-start p-1 pt-2 gap-1"
-        style={{ transform: 'translateZ(12px) rotateX(-90deg)', transformOrigin: 'bottom' }}
-      >
-        <div className={`w-8 h-0.5 rounded-full ${ledColor} animate-pulse`} />
-        <div className="w-8 h-0.5 rounded-full bg-blue-500/50" />
-        <div className="w-8 h-0.5 rounded-full bg-blue-500/50" />
-        <div className={`mt-auto mb-1 w-2 h-2 rounded-full ${ledColor}`} />
-      </div>
-
-      {/* Back Face */}
-      <div 
-        className="absolute w-12 h-16 bg-slate-900 border border-slate-800"
-        style={{ transform: 'translateZ(12px) rotateX(-90deg) translateZ(-24px)', transformOrigin: 'bottom' }}
-      />
-
-      {/* Right Face */}
-      <div 
-        className="absolute w-6 h-16 bg-slate-700 border border-slate-600 origin-left"
-        style={{ transform: 'translateZ(12px) rotateX(-90deg) rotateY(90deg) translateX(0) translateZ(48px)', transformOrigin: 'bottom' }}
-      />
-
-      {/* Left Face */}
-      <div 
-        className="absolute w-6 h-16 bg-slate-900 border border-slate-800 origin-right"
-        style={{ transform: 'translateZ(12px) rotateX(-90deg) rotateY(-90deg) translateX(0) translateZ(48px)', transformOrigin: 'bottom' }}
-      />
-
-      {/* Top Face */}
-      <div 
-        className="absolute w-12 h-6 bg-slate-600 border border-slate-500"
-        style={{ transform: 'translateZ(28px)' }}
-      />
-
-      {/* Shadow on the floor */}
-      <div 
-        className="absolute w-12 h-6 bg-black/40 blur-md"
-        style={{ transform: 'translateZ(-1px)' }}
-      />
-
-      {/* Floating Info Card */}
-      <div 
-        className="absolute w-32 bg-slate-900/90 backdrop-blur-xl border border-slate-700 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-        style={{ 
-          transform: 'translateZ(60px) rotateX(-90deg) translateY(-20px) translateX(-30px)', 
-          transformOrigin: 'bottom center'
-        }}
-      >
-        <p className="text-[10px] font-bold text-white mb-1 truncate">{device.name}</p>
-        <div className="flex justify-between items-center text-[9px]">
-          <span className="text-slate-400">Health</span>
-          <span className="text-white font-bold">{device.health_score}%</span>
-        </div>
-      </div>
-    </div>
-  );
+function getStatusBg(status: string) {
+  if (status === 'Critical') return 'bg-red-500/10 border-red-500/20';
+  if (status === 'Warning') return 'bg-amber-500/10 border-amber-500/20';
+  return 'bg-emerald-500/10 border-emerald-500/20';
 }
+
+type Level = 'CAMPUS' | 'BUILDING' | 'FLOOR';
 
 export function InfrastructureMap({ devices }: { devices: Device[] }) {
   const router = useRouter();
+  const [level, setLevel] = useState<Level>('CAMPUS');
+  const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
+  const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
 
+  // Group devices by mock location
   const mapData = useMemo(() => {
-    const data: Record<string, Device[]> = {};
-    FLOORS.forEach(f => {
-      data[f.name] = [];
+    const data: Record<string, Record<string, Device[]>> = {};
+    BUILDINGS.forEach(b => {
+      data[b] = {};
+      FLOORS.forEach(f => {
+        data[b][f] = [];
+      });
     });
 
     devices.forEach(device => {
-      const floor = assignMockLocation(device.id);
-      if (data[floor] && data[floor].length < 9) {
-        data[floor].push(device);
+      const { building, floor } = assignMockLocation(device.id);
+      if (data[building] && data[building][floor]) {
+        data[building][floor].push(device);
       }
     });
     return data;
   }, [devices]);
 
-  return (
-    <div className="flex flex-col h-full min-h-[800px] vy-card overflow-hidden bg-[#0B1120] border-slate-800 text-slate-100 relative">
-      
-      {/* Background Ambience */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.15),transparent_70%)] pointer-events-none" />
+  // Aggregate health for a building
+  const getBuildingStats = (building: string) => {
+    let total = 0, critical = 0, warning = 0;
+    Object.values(mapData[building]).forEach(floorDevices => {
+      floorDevices.forEach(d => {
+        total++;
+        if (d.risk_level === 'Critical') critical++;
+        if (d.risk_level === 'Warning') warning++;
+      });
+    });
+    
+    let status = 'Healthy';
+    if (critical > 0) status = 'Critical';
+    else if (warning > 0) status = 'Warning';
 
-      {/* Header */}
-      <div className="flex items-center justify-between p-5 border-b border-white/5 bg-slate-900/50 backdrop-blur-xl z-20 relative">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+    return { total, critical, warning, status };
+  };
+
+  // Aggregate health for a floor
+  const getFloorStats = (building: string, floor: string) => {
+    const floorDevices = mapData[building][floor];
+    let total = floorDevices.length, critical = 0, warning = 0;
+    floorDevices.forEach(d => {
+      if (d.risk_level === 'Critical') critical++;
+      if (d.risk_level === 'Warning') warning++;
+    });
+    
+    let status = 'Healthy';
+    if (critical > 0) status = 'Critical';
+    else if (warning > 0) status = 'Warning';
+
+    return { total, critical, warning, status, devices: floorDevices };
+  };
+
+  return (
+    <div className="flex flex-col h-full min-h-[500px] md:min-h-[600px] vy-card overflow-hidden bg-slate-900 border-slate-800 text-slate-100">
+      {/* Header toolbar */}
+      <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-blue-400" />
+            <h2 className="text-lg font-bold tracking-tight text-white">Infrastructure Map</h2>
           </div>
-          <div>
-            <h2 className="text-lg font-black tracking-tight text-white">Datacenter Digital Twin</h2>
-            <p className="text-xs text-slate-400 font-medium">Alliance University Central Hub</p>
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+            <span className={`cursor-pointer hover:text-white transition-colors ${level === 'CAMPUS' ? 'text-blue-400 font-bold' : ''}`} onClick={() => { setLevel('CAMPUS'); setSelectedBuilding(null); setSelectedFloor(null); }}>Campus</span>
+            {selectedBuilding && (
+              <>
+                <span>/</span>
+                <span className={`cursor-pointer hover:text-white transition-colors ${level === 'BUILDING' ? 'text-blue-400 font-bold' : ''}`} onClick={() => { setLevel('BUILDING'); setSelectedFloor(null); }}>{selectedBuilding}</span>
+              </>
+            )}
+            {selectedFloor && (
+              <>
+                <span>/</span>
+                <span className="text-blue-400 font-bold">{selectedFloor}</span>
+              </>
+            )}
           </div>
         </div>
         
-        <div className="flex items-center gap-4 bg-slate-950/50 p-2 rounded-xl border border-white/5">
-          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-white/5">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700">
             <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10B981]" /> Healthy
           </div>
-          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-white/5">
+          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700">
             <div className="h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_8px_#F59E0B]" /> Warning
           </div>
-          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-white/5">
+          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700">
             <div className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_8px_#EF4444] animate-pulse" /> Critical
           </div>
         </div>
       </div>
 
-      {/* 3D Isometric Viewport */}
-      <div className="flex-1 relative overflow-hidden flex items-center justify-center">
-        
-        <div 
-          className="relative w-full max-w-5xl h-[800px] flex items-center justify-center"
-          style={{ perspective: '2000px' }}
-        >
-          {/* Base Container with Transform */}
-          <div 
-            className="relative w-full h-full"
-            style={{ 
-              transformStyle: 'preserve-3d', 
-              transform: 'rotateX(60deg) rotateZ(-45deg) translateY(-100px)' 
-            }}
-          >
-            {FLOORS.map((floor, index) => {
-              const floorDevices = mapData[floor.name] || [];
-              const floorZ = (3 - index) * 200; // Spacing floors along Z axis
-              
-              return (
-                <div 
-                  key={floor.name}
-                  className="absolute left-1/2 top-1/2 w-[600px] h-[600px] -ml-[300px] -mt-[300px]"
-                  style={{ 
-                    transformStyle: 'preserve-3d',
-                    transform: `translateZ(${floorZ}px)`
-                  }}
-                >
-                  {/* Thick Glass Floor Surface */}
+      {/* Map Viewport */}
+      <div className="flex-1 relative p-6 overflow-hidden bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]">
+        <AnimatePresence mode="wait">
+          
+          {/* LEVEL 1: CAMPUS */}
+          {level === 'CAMPUS' && (
+            <motion.div 
+              key="campus"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+              className="h-full w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 overflow-y-auto"
+            >
+              {BUILDINGS.map(building => {
+                const stats = getBuildingStats(building);
+                return (
                   <div 
-                    className="absolute inset-0 bg-[#0f172a]/80 backdrop-blur-md border-[2px] border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
-                    style={{ transformStyle: 'preserve-3d' }}
+                    key={building}
+                    onClick={() => { setSelectedBuilding(building); setLevel('BUILDING'); }}
+                    className={`relative group cursor-pointer rounded-2xl border-2 p-6 transition-all duration-300 hover:scale-105 overflow-hidden ${getStatusBg(stats.status)} hover:shadow-2xl flex flex-col justify-between h-full min-h-[200px]`}
                   >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                    {stats.status === 'Critical' && <div className="absolute inset-0 bg-red-500/10 animate-pulse pointer-events-none" />}
                     
-                    {/* Inner Grid Design */}
-                    <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100px_100px]" />
-                    <div className="absolute inset-0 border border-blue-500/20 m-4" />
-
-                    {/* Floor Label (Attached to the front-left edge) */}
-                    <div 
-                      className="absolute bottom-0 left-0 -ml-32 -mb-8 flex flex-col justify-end"
-                      style={{ transform: 'rotateX(-90deg) rotateY(0deg) rotateZ(45deg)', transformOrigin: 'bottom right' }}
-                    >
-                      <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 p-4 rounded-xl shadow-2xl flex flex-col min-w-[200px]">
-                        <div className={`h-1 w-8 rounded-full bg-gradient-to-r ${floor.color} mb-2`} />
-                        <h3 className="text-white font-black text-xl uppercase tracking-wider">{floor.name}</h3>
-                        <p className="text-slate-400 text-xs uppercase tracking-widest font-semibold">{floor.desc}</p>
+                    <div className="relative z-10 flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-3 rounded-xl ${getStatusColor(stats.status)} shadow-lg`}>
+                          <Building2 className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-white">{building}</h3>
+                          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mt-0.5">Campus Facility</p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Devices Grid */}
-                    <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 gap-12 p-16" style={{ transformStyle: 'preserve-3d' }}>
-                      {floorDevices.map((device, i) => (
-                        <div key={device.id} className="w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
-                          <Server3D device={device} onClick={() => router.push(`/devices/${device.id}`)} />
-                        </div>
-                      ))}
+                    <div className="relative z-10 grid grid-cols-3 gap-2 mt-6">
+                      <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/50 backdrop-blur-md">
+                        <p className="text-xs text-slate-400 font-semibold mb-1">Devices</p>
+                        <p className="text-xl font-bold text-white">{stats.total}</p>
+                      </div>
+                      <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/50 backdrop-blur-md">
+                        <p className="text-xs text-amber-400/80 font-semibold mb-1">Warnings</p>
+                        <p className="text-xl font-bold text-amber-400">{stats.warning}</p>
+                      </div>
+                      <div className="bg-slate-900/50 rounded-lg p-3 border border-slate-700/50 backdrop-blur-md">
+                        <p className="text-xs text-red-400/80 font-semibold mb-1">Critical</p>
+                        <p className="text-xl font-bold text-red-400">{stats.critical}</p>
+                      </div>
                     </div>
                   </div>
+                );
+              })}
+            </motion.div>
+          )}
 
-                  {/* Floor Edge Thickness (Front Right) */}
+          {/* LEVEL 2: BUILDING OVERVIEW */}
+          {level === 'BUILDING' && selectedBuilding && (
+            <motion.div 
+              key="building"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="h-full w-full flex flex-col items-center justify-center gap-4"
+            >
+              {FLOORS.slice().reverse().map((floor, i) => {
+                const stats = getFloorStats(selectedBuilding, floor);
+                return (
                   <div 
-                    className="absolute top-0 right-0 w-4 h-[600px] bg-white/5 border-l border-white/10 origin-right backdrop-blur-sm"
-                    style={{ transform: 'rotateY(-90deg)' }}
-                  />
-                  {/* Floor Edge Thickness (Bottom Left) */}
+                    key={floor}
+                    onClick={() => { setSelectedFloor(floor); setLevel('FLOOR'); }}
+                    className={`w-full max-w-3xl cursor-pointer rounded-xl border-2 p-5 transition-all duration-300 hover:scale-[1.02] ${getStatusBg(stats.status)} flex items-center justify-between group relative overflow-hidden`}
+                  >
+                    {stats.status === 'Critical' && <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none" />}
+                    <div className="flex items-center gap-6 relative z-10">
+                      <div className={`p-4 rounded-xl ${getStatusColor(stats.status)} shadow-lg flex items-center justify-center font-bold text-xl w-16 h-16`}>
+                        {3 - i}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-xl text-white group-hover:text-blue-400 transition-colors">{floor}</h3>
+                        <p className="text-sm font-semibold text-slate-400 mt-1">{stats.total} Active Devices</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6 relative z-10">
+                      {stats.critical > 0 && (
+                        <div className="flex items-center gap-2 text-red-400 font-bold bg-red-500/10 px-4 py-2 rounded-lg border border-red-500/20">
+                          <ShieldAlert className="h-5 w-5" />
+                          {stats.critical} Critical Alerts
+                        </div>
+                      )}
+                      <ArrowRight className="h-6 w-6 text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-2" />
+                    </div>
+                  </div>
+                );
+              })}
+            </motion.div>
+          )}
+
+          {/* LEVEL 3: FLOOR DEVICE LAYOUT */}
+          {level === 'FLOOR' && selectedBuilding && selectedFloor && (
+            <motion.div 
+              key="floor"
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="h-full w-full"
+            >
+              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 content-start h-full p-4 overflow-y-auto">
+                {getFloorStats(selectedBuilding, selectedFloor).devices.map(device => (
                   <div 
-                    className="absolute bottom-0 left-0 w-[600px] h-4 bg-white/10 border-t border-white/20 origin-bottom backdrop-blur-sm"
-                    style={{ transform: 'rotateX(90deg)' }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                    key={device.id}
+                    onClick={() => router.push(`/devices/${device.id}`)}
+                    className={`relative group cursor-pointer aspect-square rounded-xl border-2 flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 hover:z-20 ${getStatusBg(device.status)} hover:shadow-2xl`}
+                  >
+                    {device.risk_level === 'Critical' && <div className="absolute inset-0 bg-red-500/20 animate-pulse pointer-events-none rounded-xl" />}
+                    <Server className={`h-8 w-8 mb-2 ${device.risk_level === 'Critical' ? 'text-red-400' : device.risk_level === 'Warning' ? 'text-amber-400' : 'text-emerald-400'}`} />
+                    <p className="text-[10px] font-bold text-white text-center px-1 truncate w-full">{device.name}</p>
+                    
+                    {/* Hover Tooltip */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-64 p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-bold text-white text-sm">{device.name}</span>
+                        <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${getStatusColor(device.status)}`}>{device.status}</div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-slate-400">Health Score</span>
+                          <span className="font-bold text-white">{device.health_score ?? 100}%</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-slate-400">Failure Prob.</span>
+                          <span className="font-bold text-red-400">{device.risk_score?.toFixed(1) || '0.0'}%</span>
+                        </div>
+                        {device.predicted_failure_type && (
+                          <div className="mt-2 pt-2 border-t border-slate-700">
+                            <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">Predicted Failure</span>
+                            <span className="text-xs font-medium text-amber-400">{device.predicted_failure_type}</span>
+                          </div>
+                        )}
+                        {device.risk_level === 'Critical' && (
+                          <div className="mt-2 pt-2 border-t border-slate-700">
+                            <span className="text-[10px] uppercase font-bold text-red-400 block mb-1">Recommended Action</span>
+                            <span className="text-xs font-medium text-white">Review AI Insights & Schedule Maintenance.</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+// Arrow helper since lucide-react ArrowRight wasn't imported initially if missing
+function ArrowRight(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
   );
 }

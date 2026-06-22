@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { InfrastructureMap } from '@/components/dashboard/InfrastructureMap';
+import { InteractiveMap } from '@/components/dashboard/InteractiveMap';
 import { PageTransition } from '@/components/layout/PageTransition';
 import { Switch } from '@/components/ui/switch';
 import { Activity, Server, ShieldAlert, WifiOff, Zap } from 'lucide-react';
@@ -89,7 +89,7 @@ export function MapClientWrapper({ devices }: { devices: Device[] }) {
 
       {/* Main Interactive Map Canvas */}
       <div className="flex-1 w-full relative z-0">
-        <InfrastructureMap devices={devices} />
+        <InteractiveMap riskHeatmapEnabled={riskHeatmapEnabled} devices={devices} />
       </div>
 
     </PageTransition>

@@ -59,7 +59,7 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 1 }}
         >
-          Reliability Before Impact
+          Intelligence Before Impact
         </motion.p>
       </motion.div>
 
@@ -307,7 +307,7 @@ export default function LandingPage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-bold tracking-widest uppercase">
               <span className="flex h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
-              Reliability Before Impact
+              Intelligence Before Impact
             </div>
             
             {/* Headline */}
@@ -418,7 +418,7 @@ export default function LandingPage() {
               <BrainCircuit className="h-5 w-5 text-blue-600" />
               <span className="text-lg font-black text-slate-800 tracking-tight">VyomAi</span>
             </div>
-            <p className="text-slate-400 text-sm font-medium">© {new Date().getFullYear()} VYOMAI. Reliability Before Impact.</p>
+            <p className="text-slate-400 text-sm font-medium">© {new Date().getFullYear()} VYOMAI. Intelligence Before Impact.</p>
             <div className="flex items-center gap-6 text-sm font-semibold text-slate-400">
               <a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a>
               <a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a>

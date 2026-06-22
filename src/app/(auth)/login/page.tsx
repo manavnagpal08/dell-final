@@ -357,7 +357,7 @@ export default function LoginPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium tracking-widest uppercase backdrop-blur-md mb-4"
             >
               <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-              Reliability Before Impact
+              Intelligence Before Impact
             </motion.div>
             
             <h2 className="text-5xl font-black text-slate-900 leading-tight tracking-tight">

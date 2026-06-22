@@ -56,8 +56,7 @@ To prove the model's efficacy, we built a fully interactive `/test` dashboard. Y
 This repository contains both the Next.js frontend and the FastAPI backend. **You must run both simultaneously in two separate terminals.**
 
 ### 1. Environment Configuration
-Make sure you have a `.env` file configured in the `backend/` directory with necessary credentials (like Supabase and Gemini).
-You can copy `.env.example` to `.env` if available.
+**Great news!** The `.env` and `.env.local` files are already pre-configured and included in this repository specifically for the Hackathon judges. You do **not** need to manually set up Supabase or Gemini API keys. The app is ready to run out of the box!
 
 ### 2. Backend Setup (FastAPI)
 Open your **first terminal** and run the following commands:

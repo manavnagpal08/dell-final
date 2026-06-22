@@ -201,10 +201,11 @@ function DeviceCard({ device: initialDevice }: { device: Device }) {
   
   // Base power depends on device type
   let basePower = 300;
-  if (device.type === 'Network' || device.type === 'Network Appliance') basePower = 80;
-  else if (device.type === 'Storage' || device.type === 'Storage Node') basePower = 200;
-  else if (device.type === 'Edge' || device.type === 'Edge Device' || device.type === 'Laptop') basePower = 45;
-  else if (device.type === 'HVAC') basePower = 1500;
+  const devType = device.type as string;
+  if (devType === 'Network' || devType === 'Network Appliance') basePower = 80;
+  else if (devType === 'Storage' || devType === 'Storage Node') basePower = 200;
+  else if (devType === 'Edge' || devType === 'Edge Device' || devType === 'Laptop') basePower = 40;
+  else if (devType === 'HVAC') basePower = 1500;
   
   const powerVariance = (hash % (basePower * 0.4)) - (basePower * 0.1);
 
@@ -216,7 +217,7 @@ function DeviceCard({ device: initialDevice }: { device: Device }) {
 
   // Component states
   const compStates = [
-    { name: 'Fan', icon: Fan, state: temp > (device.type === 'HVAC' ? 60 : 45) ? 'red' : 'emerald' },
+    { name: 'Fan', icon: Fan, state: temp > (devType === 'HVAC' ? 60 : 45) ? 'red' : 'emerald' },
     { name: 'Power', icon: Zap, state: power > basePower * 1.3 ? 'amber' : 'emerald' },
     { name: 'Storage', icon: Database, state: 'emerald' },
   ];

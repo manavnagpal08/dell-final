@@ -16,9 +16,22 @@ export default async function DashboardPage() {
   const devices = await getDevices();
   const alerts = await getAlerts();
 
-  const healthyCount = devices.filter((d: any) => d.risk_level === 'Healthy').length;
-  const warningCount = devices.filter((d: any) => d.risk_level === 'Warning').length;
-  const criticalCount = devices.filter((d: any) => d.risk_level === 'Critical').length;
+  const activeCriticalAlerts = alerts.filter((a: any) => a.severity === 'Critical' && a.status === 'Active');
+  const criticalDeviceIds = new Set(activeCriticalAlerts.map((a: any) => a.device_id));
+  
+  let criticalCount = 0;
+  let warningCount = 0;
+  let healthyCount = 0;
+
+  devices.forEach((d: any) => {
+    if (d.risk_level === 'Critical' || criticalDeviceIds.has(d.id)) {
+      criticalCount++;
+    } else if (d.risk_level === 'Warning') {
+      warningCount++;
+    } else {
+      healthyCount++;
+    }
+  });
   
   let isLocalMode = devices.length === 1 && devices[0].vendor === 'Local PC';
   let batteryPct = 100;

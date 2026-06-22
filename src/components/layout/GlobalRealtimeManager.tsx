@@ -44,6 +44,9 @@ export function GlobalRealtimeManager() {
               if (dev) devName = dev.device_name || dev.name || devName;
             }
             setCriticalAlert({ ...activeCritical, deviceName: devName });
+            setTimeout(() => {
+              setCriticalAlert((prev: any) => prev?.id === activeCritical.id ? null : prev);
+            }, 3000);
           }
         }
       } catch (error) {

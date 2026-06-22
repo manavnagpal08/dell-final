@@ -93,10 +93,18 @@ npm install
 # 3. Start the Next.js frontend
 npm run dev
 ```
-*The frontend will now be running on `http://localhost:3000`*
+### Step 4: Test it out!
+Once both servers are running, just open your web browser and go to **`http://localhost:3000`**!
 
-### 4. Testing the ML Engine
-Once both the backend and frontend servers are running:
+---
+
+### 🖥️ Desktop App (Optional)
+If you have downloaded the Vyom AI Desktop Application (`VyomAi-Setup.exe`), you do not need to use the web browser.
+
+1. Ensure the **Backend Server** (Step 2) is running in the background.
+2. Double-click the `VyomAi-Setup.exe` file to install and launch the desktop application directly!
+
+### 5. Testing the ML Engine
 Navigate your browser to **`http://localhost:3000/test`**
 
 This interactive dashboard allows you to force anomalies (Storage/Operational) or upload custom CSVs to watch the AI engine react in real-time.

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getDevices } from '@/lib/api';
-import { Device } from '@/types';
+import { Device, Alert } from '@/types';
 
 const getIconForType = (type: string) => {
   if (type === 'Cooling') return Fan;
@@ -19,7 +19,7 @@ const getIconForType = (type: string) => {
   return Activity;
 };
 
-export function ExplainableAiDashboard() {
+export function ExplainableAiDashboard({ initialDevices, initialAlerts }: { initialDevices: Device[], initialAlerts: Alert[] }) {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('Server');
@@ -29,14 +29,30 @@ export function ExplainableAiDashboard() {
   const [showTimeline, setShowTimeline] = useState(false);
 
   useEffect(() => {
-    getDevices().then(data => {
-      setDevices(data);
-      if (data.length > 0) {
-        setActiveCategory(data[0].type || 'Server');
-        setSelectedDevice(data[0]);
+    const activeAlerts = (initialAlerts || []).filter(a => a.severity === 'Critical' && a.status === 'Active');
+    const alertDeviceIds = new Set(activeAlerts.map(a => a.device_id));
+
+    const processedDevices = (initialDevices || []).map(d => {
+      if (alertDeviceIds.has(d.id)) {
+        return { ...d, risk_score: Math.max(d.risk_score || 0, 95) };
       }
+      return d;
     });
-  }, []);
+
+    setDevices(processedDevices);
+    
+    // Only auto-select if we don't have a selected device or it's not in the new list
+    if (processedDevices.length > 0) {
+      setSelectedDevice(prev => {
+        if (!prev) return processedDevices[0];
+        const stillExists = processedDevices.find(d => d.id === prev.id);
+        return stillExists || processedDevices[0];
+      });
+      if (!activeCategory) {
+        setActiveCategory(processedDevices[0].type || 'Server');
+      }
+    }
+  }, [initialDevices, initialAlerts]);
 
   const types = Array.from(new Set(devices.map(d => d.type || 'Server')));
   

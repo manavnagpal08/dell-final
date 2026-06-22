@@ -9,6 +9,7 @@ export function GlobalRealtimeManager() {
   const router = useRouter();
   const [criticalAlert, setCriticalAlert] = useState<any>(null);
   const seenAlerts = useRef<Set<string>>(new Set());
+  const lastAlertTime = useRef<number>(0);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api/v1';
 
@@ -36,6 +37,11 @@ export function GlobalRealtimeManager() {
           );
 
           if (activeCritical && !criticalAlert) {
+            const now = Date.now();
+            if (now - lastAlertTime.current < 3 * 60 * 1000) {
+              return; // Cooldown of 3 minutes
+            }
+            lastAlertTime.current = now;
             seenAlerts.current.add(activeCritical.id);
             let devName = activeCritical.device_id;
             if (devicesRes.ok) {

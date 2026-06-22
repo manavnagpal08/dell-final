@@ -1,9 +1,13 @@
 import { PageTransition } from '@/components/layout/PageTransition';
 import { ExplainableAiDashboard } from '@/components/explainability/ExplainableAiDashboard';
+import { getDevices, getAlerts } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
-export default function PredictionsPage() {
+export default async function PredictionsPage() {
+  const devices = await getDevices();
+  const alerts = await getAlerts();
+
   return (
     <PageTransition className="pb-8 max-w-[1400px] mx-auto flex flex-col gap-4 h-[calc(100vh-100px)]">
       <div className="shrink-0 flex justify-between items-end">
@@ -16,7 +20,7 @@ export default function PredictionsPage() {
       </div>
 
       <div className="flex-1 min-h-0">
-        <ExplainableAiDashboard />
+        <ExplainableAiDashboard initialDevices={devices} initialAlerts={alerts} />
       </div>
     </PageTransition>
   );
